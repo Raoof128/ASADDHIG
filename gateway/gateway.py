@@ -170,7 +170,6 @@ async def gateway_endpoint(request: GatewayRequest, http_request: Request):
     Raises:
         HTTPException: If processing fails or request is invalid
     """
-    start_time = time.time()
     client_ip = get_client_ip(http_request)
 
     try:
@@ -182,10 +181,13 @@ async def gateway_endpoint(request: GatewayRequest, http_request: Request):
 
         # Check request size
         prompt_size = len(request.prompt.encode("utf-8"))
-        if prompt_size > config.max_request_size:
+        max_size = config.max_request_size
+        if prompt_size > max_size:
             raise HTTPException(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                detail=f"Request size ({prompt_size} bytes) exceeds maximum ({config.max_request_size} bytes)",
+                detail=(
+                    f"Request size ({prompt_size} bytes) " f"exceeds maximum ({max_size} bytes)"
+                ),
             )
 
         logger.info(f"Processing request from {client_ip}, prompt length: {len(request.prompt)}")

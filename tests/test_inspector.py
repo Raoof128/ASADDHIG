@@ -2,8 +2,6 @@
 Tests for PII Inspector module.
 """
 
-import pytest
-
 from gateway.inspector import AustralianPIIInspector
 
 

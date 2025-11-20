@@ -115,15 +115,10 @@ class AustralianPIIInspector:
 
         try:
             # TFN checksum validation (weighted sum)
-            weights = [1, 4, 3, 7, 5, 8, 6, 9, 10]
-            if len(digits) == 8:
-                weights = weights[1:]  # Remove first weight for 8-digit TFN
-
-            total = sum(int(d) * w for d, w in zip(digits[:-1], weights))
-            # check_digit = total % 11  # Not used in demo mode
-
-            # For demo: validate format, but don't enforce strict checksum
-            # In production: return (total % 11) == int(digits[-1])
+            # Note: Real TFN validation uses weighted sum algorithm
+            # For demo purposes, we validate format but allow all checksums
+            # Format validation only - checksum validation relaxed for demo
+            # In production: validate checksum with (total % 11) == int(digits[-1])
             return True  # Format is valid, checksum validation relaxed for demo
         except (ValueError, IndexError, TypeError):
             return False
