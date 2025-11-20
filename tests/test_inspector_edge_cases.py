@@ -1,6 +1,7 @@
 """
 Edge case tests for PII Inspector.
 """
+
 import pytest
 from gateway.inspector import AustralianPIIInspector
 
@@ -89,4 +90,3 @@ def test_validate_tfn_invalid_format():
     inspector = AustralianPIIInspector()
     assert inspector._validate_tfn("123") is False
     assert inspector._validate_tfn("123456789012") is False
-
