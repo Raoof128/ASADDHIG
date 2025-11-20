@@ -9,7 +9,7 @@ python-multipart==0.0.6
 requests==2.31.0
 
 # Streamlit Dashboard
-streamlit==1.28.1
+streamlit==1.51.0
 
 # PII Detection (using regex-based approach, can be enhanced with presidio)
 # presidio-analyzer==2.2.33
