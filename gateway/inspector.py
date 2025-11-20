@@ -142,31 +142,33 @@ class AustralianPIIInspector:
         if not text:
             return [], 0.0
 
-        detections = []
         text_lower = text.lower()
 
         # Check for sensitive keywords
-        keyword_matches = sum(1 for keyword in self.sensitive_keywords if keyword in text_lower)
-        keyword_score = min(keyword_matches * 0.15, 0.6)  # Max 0.6 from keywords
+        keyword_score = self._calculate_keyword_score(text_lower)
 
         # Pattern-based detection
+        detections = self._detect_patterns(text)
+
+        # Calculate overall PII score
+        pii_score = self._calculate_pii_score(keyword_score, detections)
+
+        return detections, pii_score
+
+    def _calculate_keyword_score(self, text_lower: str) -> float:
+        """Calculate PII score from sensitive keywords."""
+        keyword_matches = sum(1 for keyword in self.sensitive_keywords if keyword in text_lower)
+        return min(keyword_matches * 0.15, 0.6)  # Max 0.6 from keywords
+
+    def _detect_patterns(self, text: str) -> List[PIIDetection]:
+        """Detect PII patterns in text (extracted for complexity reduction)."""
+        detections = []
+
         for pii_type, pattern in self.patterns.items():
             matches = pattern.finditer(text)
             for match in matches:
                 value = match.group(0)
-                confidence = 0.7  # Base confidence
-
-                # Increase confidence for validated patterns
-                if pii_type == "medicare" and self._validate_medicare(value):
-                    confidence = 0.95
-                elif pii_type == "tfn" and self._validate_tfn(value):
-                    confidence = 0.95
-                elif pii_type == "drivers_licence":
-                    confidence = 0.85
-                elif pii_type == "mobile":
-                    confidence = 0.80
-                elif pii_type == "credit_card":
-                    confidence = 0.90
+                confidence = self._get_confidence(pii_type, value)
 
                 detections.append(
                     PIIDetection(
@@ -177,7 +179,28 @@ class AustralianPIIInspector:
                     )
                 )
 
-        # Calculate overall PII score
+        return detections
+
+    def _get_confidence(self, pii_type: str, value: str) -> float:
+        """Get confidence score for detected PII."""
+        confidence = 0.7  # Base confidence
+
+        # Increase confidence for validated patterns
+        if pii_type == "medicare" and self._validate_medicare(value):
+            confidence = 0.95
+        elif pii_type == "tfn" and self._validate_tfn(value):
+            confidence = 0.95
+        elif pii_type == "drivers_licence":
+            confidence = 0.85
+        elif pii_type == "mobile":
+            confidence = 0.80
+        elif pii_type == "credit_card":
+            confidence = 0.90
+
+        return confidence
+
+    def _calculate_pii_score(self, keyword_score: float, detections: List[PIIDetection]) -> float:
+        """Calculate overall PII score from keyword and pattern scores."""
         pattern_score = min(len(detections) * 0.2, 0.8)  # Max 0.8 from patterns
         pii_score = min(keyword_score + pattern_score, 1.0)
 
@@ -186,7 +209,7 @@ class AustralianPIIInspector:
         if unique_types >= 2:
             pii_score = min(pii_score + 0.1, 1.0)
 
-        return detections, pii_score
+        return pii_score
 
     def _redact_value(self, value: str, pii_type: str) -> str:
         """Redact PII value for logging (show only partial)."""
