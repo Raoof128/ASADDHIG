@@ -24,32 +24,31 @@ class ComplianceLogger:
         # Ensure log directory exists
         os.makedirs(self.log_dir, exist_ok=True)
 
-        # Setup structured logger
-        self.logger = logging.getLogger("sovereign_audit")
+        # Setup structured logger with unique name per file to avoid handler conflicts
+        logger_name = f"sovereign_audit_{id(self)}"
+        self.logger = logging.getLogger(logger_name)
         self.logger.setLevel(logging.INFO)
 
+        # Clear any existing handlers to avoid conflicts
+        self.logger.handlers.clear()
+
         # File handler for audit log
-        if not self.logger.handlers:
-            file_handler = logging.FileHandler(self.log_file)
-            file_handler.setLevel(logging.INFO)
+        file_handler = logging.FileHandler(self.log_file)
+        file_handler.setLevel(logging.INFO)
 
-            # JSON formatter for structured logging
-            formatter = logging.Formatter("%(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
+        # JSON formatter for structured logging
+        formatter = logging.Formatter("%(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
 
-            # Also log to console in development
-            console_handler = logging.StreamHandler()
-            console_handler.setLevel(logging.INFO)
-            console_formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-            )
-            console_handler.setFormatter(console_formatter)
-            self.logger.addHandler(console_handler)
-
-        # Ensure handlers flush immediately
-        for handler in self.logger.handlers:
-            handler.flush()
+        # Also log to console in development
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+        )
+        console_handler.setFormatter(console_formatter)
+        self.logger.addHandler(console_handler)
 
     def log_request(
         self,
