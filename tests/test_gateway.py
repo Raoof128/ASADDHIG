@@ -10,16 +10,7 @@ from gateway.gateway import app
 @pytest.fixture
 def client():
     """Create a test client."""
-    # TestClient needs to be imported correctly
-    try:
-        from fastapi.testclient import TestClient
-
-        return TestClient(app)
-    except ImportError:
-        # Fallback for older versions
-        from starlette.testclient import TestClient
-
-        return TestClient(app)
+    return TestClient(app=app)
 
 
 def test_root_endpoint(client):
