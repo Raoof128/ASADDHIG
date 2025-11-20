@@ -10,7 +10,7 @@ from gateway.gateway import app
 @pytest.fixture
 def client():
     """Create a test client."""
-    return TestClient(app=app)
+    return TestClient(app)
 
 
 def test_root_endpoint(client):
