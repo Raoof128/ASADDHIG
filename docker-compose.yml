@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  gateway_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    container_name: sovereign_gateway_api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
+      - PII_THRESHOLD=${PII_THRESHOLD:-0.3}
+    volumes:
+      - ./sovereign_audit.log:/app/sovereign_audit.log
+    depends_on:
+      - ollama
+    networks:
+      - sovereign_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  dashboard_ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: sovereign_dashboard_ui
+    ports:
+      - "8501:8501"
+    environment:
+      - GATEWAY_URL=http://gateway_api:8000
+    depends_on:
+      - gateway_api
+    networks:
+      - sovereign_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: sovereign_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
+    networks:
+      - sovereign_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  sovereign_network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+    driver: local
+
