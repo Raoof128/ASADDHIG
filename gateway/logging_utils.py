@@ -112,6 +112,10 @@ class ComplianceLogger:
         )
         self.logger.info(summary)
 
+        # Flush handlers to ensure data is written
+        for handler in self.logger.handlers:
+            handler.flush()
+
     def get_recent_logs(self, limit: int = 100) -> list[dict]:
         """
         Read recent log entries from the audit log file.
