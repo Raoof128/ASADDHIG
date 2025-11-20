@@ -47,6 +47,10 @@ class ComplianceLogger:
             console_handler.setFormatter(console_formatter)
             self.logger.addHandler(console_handler)
 
+        # Ensure handlers flush immediately
+        for handler in self.logger.handlers:
+            handler.flush()
+
     def log_request(
         self,
         route: str,

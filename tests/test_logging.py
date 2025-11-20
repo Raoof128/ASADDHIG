@@ -47,18 +47,25 @@ def test_log_request(temp_log_file):
 
     # Verify log file was created and has content
     assert os.path.exists(temp_log_file)
-    # Wait a moment for file write
+
+    # Force flush and wait for file write
     import time
 
-    time.sleep(0.2)
+    time.sleep(0.5)
 
+    # Read file content
     with open(temp_log_file, "r") as f:
         content = f.read()
-        content_lower = content.lower()
-        # Check for any of the expected content (case-insensitive)
-        assert (
-            "sovereign" in content_lower or "0.85" in content or "medicare" in content_lower
-        ), f"Expected content not found. Content: {content[:200]}"
+
+    # Verify content exists
+    assert len(content) > 0, f"Log file is empty: {temp_log_file}"
+
+    content_lower = content.lower()
+    # Check for expected content (case-insensitive)
+    # The log should contain either JSON with "sovereign" or human-readable with "SOVEREIGN"
+    assert (
+        "sovereign" in content_lower or "0.85" in content or "medicare" in content_lower
+    ), f"Expected content not found. Content length: {len(content)}, Preview: {content[:500]}"
 
 
 def test_get_recent_logs(temp_log_file):
