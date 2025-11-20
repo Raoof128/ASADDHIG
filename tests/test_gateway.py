@@ -10,7 +10,15 @@ from gateway.gateway import app
 @pytest.fixture
 def client():
     """Create a test client."""
-    return TestClient(app)
+    # TestClient takes app as first positional argument
+    # Note: These tests require the gateway to be running or mocked
+    try:
+        return TestClient(app)
+    except TypeError:
+        # Fallback for different versions
+        from starlette.testclient import TestClient as StarletteTestClient
+
+        return StarletteTestClient(app)
 
 
 def test_root_endpoint(client):
