@@ -2,13 +2,15 @@
 Integration tests for the complete gateway flow.
 """
 
+import os
+import tempfile
+
 import pytest
+
 from gateway.inspector import AustralianPIIInspector
-from gateway.router import LLMRouter
 from gateway.logging_utils import ComplianceLogger
 from gateway.models import GatewayRequest
-import tempfile
-import os
+from gateway.router import LLMRouter
 
 
 @pytest.fixture

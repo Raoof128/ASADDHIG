@@ -3,7 +3,8 @@ PII Inspector for Australian identifiers and sensitive data detection.
 """
 
 import re
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
+
 from .models import PIIDetection
 
 

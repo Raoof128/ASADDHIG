@@ -7,10 +7,12 @@ cloud (OpenAI) and local (Ollama) models.
 
 import logging
 import time
-import requests
 from typing import Tuple
-from .models import PIIDetection
+
+import requests
+
 from .config import config
+from .models import PIIDetection
 
 logger = logging.getLogger(__name__)
 

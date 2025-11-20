@@ -4,6 +4,7 @@ Integration tests for the FastAPI gateway.
 
 import pytest
 from fastapi.testclient import TestClient
+
 from gateway.gateway import app
 
 

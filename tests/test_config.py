@@ -3,7 +3,9 @@ Tests for configuration management.
 """
 
 import os
+
 import pytest
+
 from gateway.config import GatewayConfig, config
 
 

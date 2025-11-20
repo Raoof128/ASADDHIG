@@ -2,9 +2,11 @@
 Tests for data models.
 """
 
-import pytest
 from datetime import datetime
-from gateway.models import GatewayRequest, GatewayResponse, PIIDetection, AuditLogEntry
+
+import pytest
+
+from gateway.models import AuditLogEntry, GatewayRequest, GatewayResponse, PIIDetection
 
 
 def test_gateway_request_valid():

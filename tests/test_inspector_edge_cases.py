@@ -3,6 +3,7 @@ Edge case tests for PII Inspector.
 """
 
 import pytest
+
 from gateway.inspector import AustralianPIIInspector
 
 

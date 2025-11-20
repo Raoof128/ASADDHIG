@@ -10,17 +10,17 @@ import logging
 import time
 from typing import Optional
 
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 
-from .models import GatewayRequest, GatewayResponse
-from .inspector import AustralianPIIInspector
-from .router import LLMRouter
-from .logging_utils import ComplianceLogger
 from .config import config
+from .inspector import AustralianPIIInspector
+from .logging_utils import ComplianceLogger
+from .models import GatewayRequest, GatewayResponse
+from .router import LLMRouter
 
 # Configure logging
 logging.basicConfig(

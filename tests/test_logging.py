@@ -4,7 +4,9 @@ Tests for compliance logging utilities.
 
 import os
 import tempfile
+
 import pytest
+
 from gateway.logging_utils import ComplianceLogger
 
 
@@ -91,8 +93,8 @@ def test_get_recent_logs(temp_log_file):
 
 def test_get_recent_logs_empty_file():
     """Test retrieving logs from non-existent file."""
-    import tempfile
     import os
+    import tempfile
 
     # Use a temp file that doesn't exist yet
     with tempfile.NamedTemporaryFile(delete=True, suffix=".log") as f:

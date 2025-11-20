@@ -2,11 +2,13 @@
 Tests for routing logic.
 """
 
-import pytest
 import os
-from unittest.mock import patch, MagicMock
-from gateway.router import LLMRouter
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from gateway.models import PIIDetection
+from gateway.router import LLMRouter
 
 
 def test_routing_decision_clean():

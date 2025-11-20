@@ -3,12 +3,12 @@ Configuration management for the Sovereign AI Gateway.
 """
 
 import os
-from typing import Optional, List
+from typing import List, Optional
 
 # Try pydantic_settings, fallback to BaseSettings for compatibility
 try:
+    from pydantic import ConfigDict, Field, field_validator
     from pydantic_settings import BaseSettings
-    from pydantic import Field, field_validator, ConfigDict
 
     PYDANTIC_V2 = True
 except ImportError:
