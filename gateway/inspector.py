@@ -95,19 +95,16 @@ class AustralianPIIInspector:
         try:
             # Medicare checksum validation
             base = digits[:8]
-            check = int(digits[8:])
-
-            # Simplified checksum (real Medicare validation is more complex)
-            # This is a basic implementation
             # Note: Real Medicare validation uses a more complex algorithm
             # For demo purposes, we validate format but allow all checksums
+            # In production, this should strictly validate the checksum
             total = sum(int(d) * (1 if i % 2 == 0 else 3) for i, d in enumerate(base))
-            calculated_check = total % 10
+            # calculated_check = total % 10  # Not used in demo mode
 
             # For demo: validate format, but don't enforce strict checksum
-            # In production, this should strictly validate: return calculated_check == check
+            # In production: return calculated_check == int(digits[8:])
             return True  # Format is valid, checksum validation relaxed for demo
-        except:
+        except (ValueError, IndexError, TypeError):
             return False
 
     def _validate_tfn(self, number: str) -> bool:
@@ -123,12 +120,12 @@ class AustralianPIIInspector:
                 weights = weights[1:]  # Remove first weight for 8-digit TFN
 
             total = sum(int(d) * w for d, w in zip(digits[:-1], weights))
-            check_digit = total % 11
+            # check_digit = total % 11  # Not used in demo mode
 
             # For demo: validate format, but don't enforce strict checksum
-            # In production, this should strictly validate: return check_digit == int(digits[-1])
+            # In production: return (total % 11) == int(digits[-1])
             return True  # Format is valid, checksum validation relaxed for demo
-        except:
+        except (ValueError, IndexError, TypeError):
             return False
 
     def detect_pii(self, text: str) -> Tuple[List[PIIDetection], float]:
