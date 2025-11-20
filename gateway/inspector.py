@@ -94,15 +94,10 @@ class AustralianPIIInspector:
 
         try:
             # Medicare checksum validation
-            base = digits[:8]
             # Note: Real Medicare validation uses a more complex algorithm
             # For demo purposes, we validate format but allow all checksums
-            # In production, this should strictly validate the checksum
-            total = sum(int(d) * (1 if i % 2 == 0 else 3) for i, d in enumerate(base))
-            # calculated_check = total % 10  # Not used in demo mode
-
-            # For demo: validate format, but don't enforce strict checksum
-            # In production: return calculated_check == int(digits[8:])
+            # Format validation only - checksum validation relaxed for demo
+            # In production: validate checksum with calculated_check == int(digits[8:])
             return True  # Format is valid, checksum validation relaxed for demo
         except (ValueError, IndexError, TypeError):
             return False
